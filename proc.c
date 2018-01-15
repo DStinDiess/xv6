@@ -288,7 +288,7 @@ wait(int *status)
       if(p->state == ZOMBIE){
         // Found one.
         pid = p->pid;
-	if (status != NULL)
+	if (status != 0)
 	  *(status) = p->exitStatus;
         kfree(p->kstack);
         p->kstack = 0;
