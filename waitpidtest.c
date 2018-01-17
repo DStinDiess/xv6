@@ -16,7 +16,7 @@ main (int argc, char* argv[])
         int wc = waitpid(rc, 0, 0);
         printf(0, "hello, I am parent of %d (wc:%d) (pid:%d)\n",
                 rc, wc, (int) getpid());
-        exit(0);
+        //exit(0);
     }
 
     return 0;
