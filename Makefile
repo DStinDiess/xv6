@@ -175,6 +175,7 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_waitpidtest\
+	_lab1\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
