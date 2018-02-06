@@ -581,7 +581,23 @@ procdump(void)
 }
 
 int
-priority(struct proc* process, int priority)
+priority(int pid, int priority)
 {
-    process->priority += priority;
+   struct proc* p;
+
+   acquire(&ptable.lock);
+   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){
+        p->priority += priority;
+        if (p->priority < 0) 
+            p->priority = 0;
+        if (p->priority > 31) 
+            p->priority = 31;
+
+        return p->priority;
+    }
+  }
+  release(&ptable.lock);
+
+  return -1; //Process not found
 }
