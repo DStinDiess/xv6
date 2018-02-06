@@ -579,3 +579,9 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+int
+priority(struct proc* process, int priority)
+{
+    process->priority += priority;
+}

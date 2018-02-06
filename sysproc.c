@@ -111,3 +111,14 @@ sys_waitpid(void)
 
   return waitpid(pid, status, options);
 }
+
+int priority(void)
+{
+    int priority;
+    struct proc* process;
+    
+    if(argint(0, &priority) < 0 || argptr(1, (void*)&process, sizeof(process) < 0)
+        return -1;
+
+    return priority(proc, priority);
+}
