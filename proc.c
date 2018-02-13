@@ -317,7 +317,7 @@ wait(int *status)
         return pid;
       } else {
 	if (curproc->priority < p->priority) {
-	  p->priority = curproc->priority;
+	  p->priority = 0;
 	}
       }
     }
@@ -367,7 +367,7 @@ waitpid(int pid, int* status, int options)
         return pid;
        } else {
 	 if (curproc->priority < p->priority) {
-	   p->priority = curproc->priority;
+	   p->priority = 0;
 	 }
        }
     }
