@@ -315,6 +315,10 @@ wait(int *status)
         p->state = UNUSED;
         release(&ptable.lock);
         return pid;
+      } else {
+	if (curproc->priority < p->priority) {
+	  p->priority = curproc->priority;
+	}
       }
     }
 
@@ -361,7 +365,11 @@ waitpid(int pid, int* status, int options)
         p->state = UNUSED;
         release(&ptable.lock);
         return pid;
-      }
+       } else {
+	 if (curproc->priority < p->priority) {
+	   p->priority = curproc->priority;
+	 }
+       }
     }
 
     // No point waiting if we don't have any children.
