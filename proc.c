@@ -581,8 +581,8 @@ procdump(void)
 }
 
 int
-_priority(struct proc* p, int priority) {
-    p->priority += priority;
+_setpriority(struct proc* p, int priority) {
+    p->priority = priority;
     
     if (p->priority < 0) 
         p->priority = 0;
@@ -593,17 +593,8 @@ _priority(struct proc* p, int priority) {
 }
 
 int
-priority(int pid, int priority)
-{
-   struct proc* p;
-
-   acquire(&ptable.lock);
-   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->pid == pid){
-        return _priority(p, priority);
-    }
-  }
-  release(&ptable.lock);
-
-  return -1; //Process not found
+setpriority(int priority) {
+    struct proc *curproc = myproc();
+    
+    return _setpriority(curproc, priority);
 }
