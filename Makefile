@@ -177,6 +177,7 @@ UPROGS=\
 	_waitpidtest\
 	_lab1\
 	_lab2\
+	_lab2decay\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
