@@ -89,6 +89,9 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 10;         //Default priority to 10
+  acquire(&tickslock);
+  p->startTime = ticks;
+  release(&tickslock);
 
   release(&ptable.lock);
 
@@ -151,6 +154,9 @@ userinit(void)
 
   p->state = RUNNABLE;
   p->priority = 10;
+  acquire(&tickslock);
+  p->startTime = ticks;
+  release(&tickslock);
 
   release(&ptable.lock);
 }
@@ -218,6 +224,9 @@ fork(void)
 
   np->state = RUNNABLE;
   np->priority = 10;
+  acquire(&tickslock);
+  np->startTime = ticks;
+  release(&tickslock);
 
   release(&ptable.lock);
 
@@ -232,6 +241,9 @@ exit(int status)
 {
   struct proc *curproc = myproc();
   curproc->exitStatus = status;
+  acquire(&tickslock);
+  cprintf("Turnaround time: %d\n", ticks - curproc->startTime);
+  release(&tickslock);
   struct proc *p;
   int fd;
 
