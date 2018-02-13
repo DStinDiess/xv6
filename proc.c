@@ -88,6 +88,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = 10;         //Default priority to 10
 
   release(&ptable.lock);
 
@@ -149,7 +150,7 @@ userinit(void)
   acquire(&ptable.lock);
 
   p->state = RUNNABLE;
-  p->priority = 0;
+  p->priority = 10;
 
   release(&ptable.lock);
 }
@@ -216,7 +217,7 @@ fork(void)
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
-  np->priority = 0;
+  np->priority = 10;
 
   release(&ptable.lock);
 
@@ -371,21 +372,31 @@ waitpid(int pid, int* status, int options)
 void
 scheduler(void)
 {
-  struct proc *p;
+  struct proc *p, *i;
+  struct proc *nextProcess;
   struct cpu *c = mycpu();
   c->proc = 0;
-  int i = 0;
   
   for(;;){
     // Enable interrupts on this processor.
     sti();
-    for(i = 0; i < 32; i++) {
+
       // Loop over process table looking for process to run.
       acquire(&ptable.lock);
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         if(p->state != RUNNABLE)
           continue;
-        if(p->priority == i) {
+
+          nextProcess = p;
+          for(i = ptable.proc; i < &ptable.proc[NPROC]; i++) {
+              if (i->state != RUNNABLE)
+                  continue;
+
+              if (i->priority <= nextProcess->priority)
+                  nextProcess = i;
+          }
+          
+          p = nextProcess;
           // Switch to chosen process.  It is the process's job
           // to release ptable.lock and then reacquire it
           // before jumping back to us.
@@ -399,12 +410,9 @@ scheduler(void)
           // Process is done running for now.
           // It should have changed its p->state before coming back.
           c->proc = 0;
-	}
-      }
+	    }
+      release(&ptable.lock);
     }
-    release(&ptable.lock);
-
-  }
 }
 
 // Enter scheduler.  Must hold only ptable.lock
@@ -439,6 +447,7 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
+  _setpriority(myproc(), myproc()->priority + 1);
   sched();
   release(&ptable.lock);
 }
