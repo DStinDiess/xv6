@@ -178,6 +178,7 @@ UPROGS=\
 	_lab1\
 	_lab2\
 	_lab2inherit\
+	_lab2decay\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
