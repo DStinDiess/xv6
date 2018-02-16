@@ -467,7 +467,9 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
-  _setpriority(myproc(), myproc()->priority + 1);
+  myproc()->count += 1;
+  if (myproc()->count % 50 == 0)
+    _setpriority(myproc(), myproc()->priority + 1);
   sched();
   release(&ptable.lock);
 }
